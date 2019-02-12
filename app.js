@@ -31,13 +31,12 @@ let cookies = '' // 存储共享cookie
 let loginCounts = 0 // 登录尝试次数
 
 // 定时器
-/*
-schedule.scheduleJob('10 * * * * *', function(){
+schedule.scheduleJob('10 0 9 * * *', function(){
     console.log('执行定时任务:' + new Date());
     main()
 })
-*/
-main()
+
+// main()
 // 主函数
 async function main() {
     // 先访问目标页面获取数据
@@ -149,7 +148,7 @@ async function getData() {
                 return false
             }
         }))) {
-            console.log('登录失败 无法访问数据接口，请先登录')
+            console.log('登录失败 无法访问数据接口，请先登录. 原因:', relSend.status, relSuccess.status, relFail.status, relUnknown.status)
             return Promise.reject(new Error('no login'))
         }
         else {
@@ -208,6 +207,8 @@ async function startLogin() {
       return true
     }
     else {
+      // 清空验证码cookie
+      cookies = ''
       await new Promise((resolve, reject) => {
          setTimeout(async () => {
            console.log('\n\n再次发起登录')
