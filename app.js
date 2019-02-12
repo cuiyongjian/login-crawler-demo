@@ -190,7 +190,13 @@ async function startLogin() {
     codeImgUrl = `${parsedLoginPageUrl.protocol}//${parsedLoginPageUrl.hostname}:${parsedLoginPageUrl.port}${path.isAbsolute(codeImgUrl) ? '' : `${path.dirname(parsedLoginPageUrl.pathname)}`}/${codeImgUrl}`
     const downloadCodeImgPath = path.join(__dirname, './code.jpg')
     await _getCodeImg(codeImgUrl, downloadCodeImgPath)
-    let codeText = await _recognizeImg(downloadCodeImgPath)
+    try {
+        let codeText = await _recognizeImg(downloadCodeImgPath)
+    }
+    catch (err) {
+        console.log('recognizeImg出错', err)
+        process.exit(-2)
+    }
     codeText = codeText.toUpperCase()
     codeText = codeText.replace(/\s+/g, '').slice(0,4)
     console.log('验证码是', codeText)
