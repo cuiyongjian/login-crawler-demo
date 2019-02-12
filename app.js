@@ -30,14 +30,14 @@ const schedule = require('node-schedule')
 let cookies = '' // 存储共享cookie
 let loginCounts = 0 // 登录尝试次数
 
-
 // 定时器
-schedule.scheduleJob('30 0 9 * * *', function(){
+/*
+schedule.scheduleJob('10 * * * * *', function(){
     console.log('执行定时任务:' + new Date());
     main()
 })
-
-
+*/
+main()
 // 主函数
 async function main() {
     // 先访问目标页面获取数据
@@ -61,13 +61,9 @@ async function main() {
     catch(err) {
         if (err.message === 'no login') {
             // 如果没有登录，则尝试最多30次登录。登录成功后再次获取数据
-            let loginRel = await startLogin()
-            if (loginRel == true) {
-                main()
-            }
-            else {
-                await startLogin()
-            }
+            await startLogin()
+
+            main()
         }
         else {
             console.log('出错了', err)
@@ -170,7 +166,8 @@ async function getData() {
 
 async function startLogin() {
     loginCounts++
-    if (loginCounts > 30) {
+    if (loginCounts > 330) {
+    console.log('登陆次数太多，退出')
         process.exit(-1)
         return
     }
@@ -199,7 +196,7 @@ async function startLogin() {
     }
     catch (err) {
         console.log('recognizeImg出错', err)
-        process.exit(-2)
+        //process.exit(-2)
     }
     codeText = codeText.toUpperCase()
     codeText = codeText.replace(/\s+/g, '').slice(0,4)
@@ -207,22 +204,40 @@ async function startLogin() {
     // 登录
     let loginRet = await _login(codeText)
     console.log('登录结果', loginRet)
-    return loginRet
+    if (loginRet == true) {
+      return true
+    }
+    else {
+      await new Promise((resolve, reject) => {
+         setTimeout(async () => {
+           console.log('\n\n再次发起登录')
+           await startLogin()
+           resolve()
+         }, 2000)
+      })
+    }
 }
 
 async function _getCodeImg(url, path) {
     path = path || './code.jpg'
-    axios({
+    return axios({
         method:'get',
         url,
         responseType:'stream'
     })
     .then(function (response) {
-      response.data.pipe(fs.createWriteStream(path))
+      let s = response.data.pipe(fs.createWriteStream(path))
+      return new Promise((resolve, reject) => {
+        s.on('finish', () => {
+           console.log('图片保存完成')
+           resolve()
+        })
+      })
     });
 }
 
 function _recognizeImg(imgPath) {
+console.log('开始识别验证码图片')
     return new Promise((resolve, reject) => {
         const tesseract = require('node-tesseract')
         var options = {
