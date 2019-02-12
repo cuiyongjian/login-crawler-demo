@@ -190,8 +190,9 @@ async function startLogin() {
     codeImgUrl = `${parsedLoginPageUrl.protocol}//${parsedLoginPageUrl.hostname}:${parsedLoginPageUrl.port}${path.isAbsolute(codeImgUrl) ? '' : `${path.dirname(parsedLoginPageUrl.pathname)}`}/${codeImgUrl}`
     const downloadCodeImgPath = path.join(__dirname, './code.jpg')
     await _getCodeImg(codeImgUrl, downloadCodeImgPath)
+    let codeText = ''
     try {
-        let codeText = await _recognizeImg(downloadCodeImgPath)
+        codeText = await _recognizeImg(downloadCodeImgPath)
     }
     catch (err) {
         console.log('recognizeImg出错', err)
