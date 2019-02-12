@@ -65,6 +65,9 @@ async function main() {
             if (loginRel == true) {
                 main()
             }
+            else {
+                await startLogin()
+            }
         }
         else {
             console.log('出错了', err)
