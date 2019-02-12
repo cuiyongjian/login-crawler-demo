@@ -294,7 +294,7 @@ async function _login(randomCode) {
         return true
     }
     else {
-        fs.writeFileSync('./result.html', result.data)
+        // fs.writeFileSync('./result.html', result.data)
         let $ = cheerio.load(result.data)
         let resultEle = $('table.login_in_board tr:nth-child(1) > td > span')
         console.log('登录失败: ', resultEle.text())
