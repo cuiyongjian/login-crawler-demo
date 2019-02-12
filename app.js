@@ -89,7 +89,13 @@ async function getData() {
         userId: 0,
         exportType: 0
     }
-    let storageCookies = fs.readFileSync('./cookie.txt')
+    let storageCookies = ''
+    try {
+        storageCookies = fs.readFileSync('./cookie.txt')
+    }
+    catch(err) {
+        console.log('没有cookie.txt文件')
+    }
 
     let axiosInstance = axios.create({
         // 设置 302 也是resolve
