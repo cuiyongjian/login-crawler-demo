@@ -20,7 +20,7 @@ module.exports = function (address, data) {
     let mailOptions = {
       from: '"your baby" <cuiyongjian@qq.com>', // sender address
       to: address, // list of receivers
-      subject: `【189短信发送统计】广州电信运维部-${config.moment.month() + 1}月${config.moment.date()}日`, // Subject line
+      subject: `【189短信发送统计】广州电信运维部-${config.moment().month() + 1}月${config.moment().date()}日`, // Subject line
       // 发送text或者html格式
       // text: 'Hello world?', // plain text body
       html: data // html body

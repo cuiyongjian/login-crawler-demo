@@ -36,13 +36,16 @@ schedule.scheduleJob('10 0 9 * * *', function(){
     main()
 })
 
-// main()
+if (process.env.START_NOW) {
+  main()
+}
+
 // 主函数
 async function main() {
     // 先访问目标页面获取数据
     try {
         let data = await getData()
-        data.time = `${config.moment.month() + 1}月${config.moment.date()}日`
+        data.time = `${config.moment().month() + 1}月${config.moment().date()}日`
         data.unknownPercent = ((data.unknown / data.send) * 100).toFixed(2) + '%'
         data.sendPercent = ((data.success / data.send) * 100).toFixed(0) + '%'
         data.successPercent = ((data.success / data.send) * 100).toFixed(2) + '%'
@@ -82,8 +85,8 @@ async function getData() {
         exportSub: 'on',
         mergeSign: 'on',
         batchState: '-1',
-        beginTime: config.moment.startOf('day').format('YYYY-MM-DD HH:mm:ss'),
-        endTime: config.moment.endOf('day').format('YYYY-MM-DD HH:mm:ss'),
+        beginTime: config.moment().startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+        endTime: config.moment().endOf('day').format('YYYY-MM-DD HH:mm:ss'),
         userId: 0,
         exportType: 0
     }
